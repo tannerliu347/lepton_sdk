@@ -1,4 +1,4 @@
-This example is meant for Raspberry Pi and Pi2 and has been tested with Raspbian.
+This example has been tested on a Raspberry Pi 3 with Raspbian.
 
 Enable the SPI and I2C interfaces on the Pi.
 
@@ -23,4 +23,3 @@ Lepton's CLK pin should be connected to RasPI's SCLK pin.
 Lepton's VIN pin should be connected to RasPI's 3v3 pin.
 Lepton's SDA pin should be connected to RasPI's SDA pin.
 Lepton's SCL pin should be connected to RasPI's SCL pin.
-
