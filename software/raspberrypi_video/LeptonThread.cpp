@@ -185,10 +185,10 @@ void LeptonThread::run()
 		//lets emit the signal for update
 		emit updateImage(myImage);
 		frame++;
-		if(frame == 5){
+		/*if(frame == 5){
 			snapshot();
 			//abort();
-		}
+		}*/
 	}
 	
 	//finally, close SPI port just bcuz
@@ -249,4 +249,8 @@ void LeptonThread::snapshot(){
 void LeptonThread::performFFC() {
 	//perform FFC
 	lepton_perform_ffc();
+}
+
+void LeptonThread::restart() {
+	lepton_restart();
 }

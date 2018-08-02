@@ -35,6 +35,7 @@ public:
 public slots:
   void performFFC();
   void snapshot();
+  void restart();
 
 signals:
   void updateText(QString);

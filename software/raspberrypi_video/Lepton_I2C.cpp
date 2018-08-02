@@ -4,6 +4,7 @@
 #include "leptonSDKEmb32PUB/LEPTON_SYS.h"
 #include "leptonSDKEmb32PUB/LEPTON_Types.h"
 #include "leptonSDKEmb32PUB/LEPTON_AGC.h"
+#include "leptonSDKEmb32PUB/LEPTON_OEM.h"
 bool _connected;
 
 LEP_CAMERA_PORT_DESC_T _port;
@@ -46,5 +47,15 @@ void lepton_perform_ffc() {
 		printf("error code: %d\n", res);
 	} else {
 		printf("FFC successful\n");
+	}
+}
+
+void lepton_restart() {
+	printf("restarting...\n");
+	int res = (int)LEP_RunOemReboot(&_port);
+	if(res != 0) {
+		printf("restart unsuccessful with error: %d\n", res);
+	} else {
+		printf("restart successful!\n");
 	}
 }
