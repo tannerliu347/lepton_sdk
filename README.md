@@ -1,6 +1,6 @@
-LeptonModule
+Lepton-3-Module
 ============
-The FLIR Lepton™ is the most compact longwave infrared (LWIR) sensor available as an OEM product. It packs a resolution of 80 × 60 pixels into a camera body that is smaller than a dime. This revolutionary camera core is poised to equip a new generation of mobile and handheld devices, as well as small fixed-mount camera systems, with thermal imaging capabilities never seen before. Lepton contains a breakthrough lens fabricated in wafer form, along with a microbolometer focal plane array (FPA) and advanced thermal image processing. 
+The FLIR Lepton™ v3 is the most compact longwave infrared (LWIR) sensor available as an OEM product. It packs a resolution of 160 × 120 pixels into a camera body that is smaller than a dime. This revolutionary camera core is poised to equip a new generation of mobile and handheld devices, as well as small fixed-mount camera systems, with thermal imaging capabilities never seen before. Lepton contains a breakthrough lens fabricated in wafer form, along with a microbolometer focal plane array (FPA) and advanced thermal image processing. 
 
 More Information
 https://groupgets.com/manufacturers/flir/products/flir-lepton
@@ -25,6 +25,17 @@ you have to enable the spi and i2c ports first for this code to work.
 5. a file called image.pgm will be created, you can use GIMP to view the image
 
 See the wiki page for more information: https://github.com/groupgets/LeptonModule/wiki
+
+raspberrypi_video
+--------------
+This is for the raspberry pi, 
+you have to enable the spi and i2c ports first for this code to work. 
+
+1.sudo raspi-config
+2.select Interfacing Options
+3.enable SPI and I2C
+4.reboot
+5.follow the readme in raspberrpy_video to get it running
 
 Software modules:
 
