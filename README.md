@@ -32,12 +32,16 @@ This is for the raspberry pi,
 you have to enable the spi and i2c ports first for this code to work. 
 
 1.sudo raspi-config
+
 2.select Interfacing Options
+
 3.enable SPI and I2C
+
 4.reboot
+
 5.follow the readme in raspberrpy_video to get it running
 
-Software modules:
+note: OEM reboot was implented to solve the problem of having to reset using VIN see raspberrypi_video README for more info
 
 arduino_i2c
 --------------

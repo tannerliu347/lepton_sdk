@@ -37,10 +37,12 @@ void lepton_perform_ffc() {
 	if(!_connected) {
 		int res = lepton_connect();
 		if (res != 0) {
+			//check SDA and SCL lines if you get this error
 			printf("I2C could not connect\n");
 			printf("error code: %d\n", res);
 		}
 	}
+/*
 	int res = (int)LEP_RunSysFFCNormalization(&_port);
 	if (res != 0) {
 		printf("FFC not successful\n");
@@ -48,14 +50,25 @@ void lepton_perform_ffc() {
 	} else {
 		printf("FFC successful\n");
 	}
+*/
 }
 
 void lepton_restart() {
+	if(!_connected) {
+		int res = lepton_connect();
+		if (res != 0) {
+			//check SDA and SCL lines if you get this error
+			printf("I2C could not connect\n");
+			printf("error code: %d\n", res);
+		}
+	}
 	printf("restarting...\n");
 	int res = (int)LEP_RunOemReboot(&_port);
+/*
 	if(res != 0) {
 		printf("restart unsuccessful with error: %d\n", res);
 	} else {
 		printf("restart successful!\n");
 	}
+*/
 }
