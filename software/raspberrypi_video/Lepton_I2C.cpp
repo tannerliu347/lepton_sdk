@@ -29,7 +29,8 @@ int lepton_temperature(){
 float raw2Celsius(float raw){
 	float ambientTemperature = 25.0;
 	float slope = 0.0217;
-	return slope*raw+ambientTemperature-177.77;
+	//return slope*raw+ambientTemperature-177.77;
+	return raw / 100 - 273.15;
 }
 
 void lepton_perform_ffc() {

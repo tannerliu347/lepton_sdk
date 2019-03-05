@@ -19,7 +19,7 @@ static void pabort(const char *s)
 	abort();
 }
 
-LeptonThread::LeptonThread() : QThread()
+LeptonThread::LeptonThread()
 {
 SpiOpenPort(0);
 }
@@ -199,7 +199,7 @@ void LeptonThread::snapshot(){
 	snapshotCount++;
 	//---------------------- create image file -----------------------
 	struct stat buf;
-	const char *prefix = "rgb";
+	const char *prefix = "out/rgb";
 	const char *ext = ".png";
 	char number[32];
 	//convert from int to string
