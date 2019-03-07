@@ -26,6 +26,10 @@ class LeptonCamera:
         self.testName = testName
         self.pixelLocs = pixelLocs
         self.dataFolder = False
+    
+    # for testing purposes only
+    def setFileName(self, fileName):
+        self.fileName = fileName
 
     """
     Controls lepton module to capture a thermal image. Updates fileName instance variable to the newly captured file
@@ -64,7 +68,7 @@ class LeptonCamera:
     Parameters
     ------------
     squareArrSize : int
-        the width of the square subarray
+        the width of the square subarray; has to be an positive odd number larger than 1
     row : int
         center point row number
     col : int
@@ -74,14 +78,13 @@ class LeptonCamera:
     ------------
     A subarray centered around given center point
     """
-    def regionalTempArr(self, squareArrSize, row, col):
+    def regionalTempArr(self, extensionSize, row, col):
         # select a region of interest array from user given row, col, size value
         tempArr = self.getTempArr()
-        extendSize = (squareArrSize - 1) / 2
-        leftSize = extendSize # make left right up down extension size to user wanted size
-        rightSize = extendSize
-        upSize = extendSize
-        downSize = extendSize
+        leftSize = extensionSize # make left right up down extension size to user wanted size
+        rightSize = extensionSize
+        upSize = extensionSize
+        downSize = extensionSize
         # check if default size is within 160 * 120 region, if not, modifity default size
         if (col - leftSize < 0):
             leftSize = col
@@ -170,8 +173,8 @@ class LeptonCamera:
 
     Parameter
     ------------
-    squareArrSize : int with default value 10
-        equivalent to meaning of squareArrSize used in regionalTempArr(self, squareArrSize, row, col)
+    extensionSize : int with default value 3
+        equivalent to meaning of extensionSize used in regionalTempArr(self, extensionSize, row, col)
     
     Output
     ------------
@@ -181,35 +184,37 @@ class LeptonCamera:
         2. regional temperature max/min/avg in a temperature region surrounding each point with user specified squareArrSize
         3. A full temperature array
     """
-    def saveData(self, squareArrSize = 10):
+    def saveData(self, extensionSize = 3):
         # create a folder named after testName and save data for current frame to a txtfile in that folder
-        if self.dataFolder == False:
+        if not Path(self.testName).exists():
             # if dataFolder has not yet been created
             os.mkdir(self.testName)
-            self.dataFolder = True
-        os.chdir(self.testName)
         # find an unused name for text file
         fileNumber = 1
         dataFileName = self.testName + 'Lepton' + str(fileNumber) + '.txt'
-        fileExist = Path(dataFileName).exists()
+        filePath = os.path.join(os.getcwd(), self.testName, dataFileName)
+        fileExist = os.path.isfile(filePath)
         while fileExist == True:
             fileNumber = fileNumber + 1
             dataFileName = self.testName + 'Lepton' + str(fileNumber) + '.txt'
-            fileExist = Path(dataFileName).exists()
-        fo = open(dataFileName, 'w')
+            filePath = os.path.join(os.getcwd(), self.testName, dataFileName)
+            fileExist = os.path.isfile(filePath)
+        filePath = os.path.join(os.getcwd(), self.testName, dataFileName)
+        fo = open(filePath, 'w')
         dnt = datetime.datetime.now()
         fo.write('Date: ' + str(dnt.month) + '/' + str(dnt.day) + '/' + str(dnt.year) + '\n')
         fo.write('Time: ' + str(dnt.hour) + ':' + str(dnt.minute) + ':' + str(dnt.second) + '\n')
         # iterate through self.pixelLoc and write information about each location to file
         for pixelLoc in self.pixelLocs.values():
-            regionalTempArr = self.regionalTempArr(squareArrSize, pixelLoc[0], pixelLoc[1])
+            regionalTempArr = self.regionalTempArr(extensionSize, pixelLoc[0], pixelLoc[1])
             regionMax = self.tempMax(regionalTempArr)
             regionMin = self.tempMin(regionalTempArr)
             regionAvg = self.tempAvg(regionalTempArr)
-            fo.write('The temperature at row' + str(pixelLoc[0]), 'column' + str(pixelLoc[1]) + 'is' + str(self.getPointTemp(pixelLoc[0], pixelLoc[1])) + 'degree C\n')
-            fo.write('The maximum temperature throughout a 3x3 area surrounding given location is' + str(regionMax), 'degree C\n')
-            fo.write('The minimum temperature throughout a 3x3 area surrounding given location is', str(regionMin), 'degree C\n')
-            fo.write('The average temperature throughout a 3x3 area surrounding given location is', str(regionAvg), 'degree C\n')
+            fo.write('The temperature at row ' + str(pixelLoc[0]) + ' column ' + str(pixelLoc[1]) + ' is ' + str(self.getPointTemp(pixelLoc[0], pixelLoc[1])) + ' degree C\n')
+            fo.write('The maximum temperature throughout a 3x3 area surrounding given location is' + str(regionMax) + ' degree C\n')
+            fo.write('The minimum temperature throughout a 3x3 area surrounding given location is' + str(regionMin) + ' degree C\n')
+            fo.write('The average temperature throughout a 3x3 area surrounding given location is' + str(regionAvg) + ' degree C\n')
+            fo.write('\n')
         # writes the full temperature array to text file
         fo.write('Full temperature array:')
         currTempArr = self.getTempArr()
@@ -219,5 +224,4 @@ class LeptonCamera:
                     fo.write('\n')
                 fo.write(str(currTempArr[i][j]) + '  ')
         # back to original working directory
-        os.chdir('..')
         fo.close()
