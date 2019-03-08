@@ -10,7 +10,7 @@ import datetime
 class LeptonCamera:
     """
     A class representation of a lepton camera object
-    
+
     Attributes
     ------------
     testName : str
@@ -26,7 +26,7 @@ class LeptonCamera:
         self.testName = testName
         self.pixelLocs = pixelLocs
         self.dataFolder = False
-    
+
     # for testing purposes only
     def setFileName(self, fileName):
         self.fileName = fileName
@@ -37,9 +37,6 @@ class LeptonCamera:
     def takeImg(self):
         # calls lepton sdk executable to save a png image file and a txt temperature file
         fileName = subprocess.check_output(["sudo", "./raspberrypi_video"])
-        # Need to modify lepton sdk to print rgb.txt file name to terminal
-        print(fileName)
-        # for debug purpose, comment out later
         time.sleep(2)
         self.fileName = fileName
 
@@ -73,7 +70,7 @@ class LeptonCamera:
         center point row number
     col : int
         center point column number
-    
+
     Return
     ------------
     A subarray centered around given center point
@@ -111,7 +108,7 @@ class LeptonCamera:
         point row number
     col : int
         point column number
-    
+
     Return
     ------------
     Temperature value at given point
@@ -175,7 +172,7 @@ class LeptonCamera:
     ------------
     extensionSize : int with default value 3
         equivalent to meaning of extensionSize used in regionalTempArr(self, extensionSize, row, col)
-    
+
     Output
     ------------
     A folder in current path named after testName. Inside the folder is text files of temperature information:
@@ -201,6 +198,7 @@ class LeptonCamera:
             fileExist = os.path.isfile(filePath)
         filePath = os.path.join(os.getcwd(), self.testName, dataFileName)
         fo = open(filePath, 'w')
+        fo.write('Extracted from file: ' + self.fileName + '\n')
         dnt = datetime.datetime.now()
         fo.write('Date: ' + str(dnt.month) + '/' + str(dnt.day) + '/' + str(dnt.year) + '\n')
         fo.write('Time: ' + str(dnt.hour) + ':' + str(dnt.minute) + ':' + str(dnt.second) + '\n')

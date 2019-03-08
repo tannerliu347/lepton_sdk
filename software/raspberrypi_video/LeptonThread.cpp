@@ -5,6 +5,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <iostream>
+using namespace std;
 
 static const char *device = "/dev/spidev0.0";
 uint8_t mode;
@@ -91,7 +93,7 @@ void LeptonThread::run()
 		int segmentNumber = 0;
 		for(int i = 0; i < NUMBER_OF_SEGMENTS; i++){
 			for(int j=0;j<PACKETS_PER_SEGMENT;j++) {
-				
+
 				//read data packets from lepton over SPI
 				read(spi_cs0_fd, result+sizeof(uint8_t)*PACKET_SIZE*(i*PACKETS_PER_SEGMENT+j), sizeof(uint8_t)*PACKET_SIZE);
 				int packetNumber = result[((i*PACKETS_PER_SEGMENT+j)*PACKET_SIZE)+1];
@@ -108,7 +110,7 @@ void LeptonThread::run()
 						usleep(5000);
 						SpiOpenPort(0);
 					}
-				} else			
+				} else
 				if(packetNumber == 20) {
 					//reads the "ttt" number
 					segmentNumber = result[(i*PACKETS_PER_SEGMENT+j)*PACKET_SIZE] >> 4;
@@ -121,7 +123,7 @@ void LeptonThread::run()
 							//usleep(1000);
 						}
 				}
-			}		
+			}
 			usleep(1000/106);
 		}
 
@@ -131,18 +133,18 @@ void LeptonThread::run()
 		uint16_t minValue = 65535;
 		uint16_t maxValue = 0;
 
-		
+
 		for(int i=0;i<FRAME_SIZE_UINT16;i++) {
 			//skip the first 2 uint16_t's of every packet, they're 4 header bytes
 			if(i % PACKET_SIZE_UINT16 < 2) {
 				continue;
 			}
-			
+
 			//flip the MSB and LSB at the last second
 			int temp = result[i*2];
 			result[i*2] = result[i*2+1];
 			result[i*2+1] = temp;
-			
+
 			value = frameBuffer[i];
 			if(value> maxValue) {
 				maxValue = value;
@@ -150,25 +152,25 @@ void LeptonThread::run()
 			if(value < minValue) {
 				if(value != 0)
 					minValue = value;
-			}		
+			}
 		}
-		
-	//	std::cout << "Minima: " << raw2Celsius(minValue) <<" °C"<<std::endl;	
-	//	std::cout << "Maximo: " << raw2Celsius(maxValue) <<" °C"<<std::endl;	
+
+	//	std::cout << "Minima: " << raw2Celsius(minValue) <<" °C"<<std::endl;
+	//	std::cout << "Maximo: " << raw2Celsius(maxValue) <<" °C"<<std::endl;
 		float diff = maxValue - minValue;
 		float scale = 255/diff;
 		QRgb color;
-		
+
 		for(int k=0; k<FRAME_SIZE_UINT16; k++) {
 			if(k % PACKET_SIZE_UINT16 < 2) {
 				continue;
 			}
-		
+
 			value = (frameBuffer[k] - minValue) * scale;
-			
+
 			const int *colormap = colormap_ironblack;
 			color = qRgb(colormap[3*value], colormap[3*value+1], colormap[3*value+2]);
-			
+
 				if((k/PACKET_SIZE_UINT16) % 2 == 0){//1
 					column = (k % PACKET_SIZE_UINT16 - 2);
 					row = (k / PACKET_SIZE_UINT16)/2;
@@ -176,11 +178,11 @@ void LeptonThread::run()
 				else{//2
 					column = ((k % PACKET_SIZE_UINT16 - 2))+(PACKET_SIZE_UINT16-2);
 					row = (k / PACKET_SIZE_UINT16)/2;
-				}	
+				}
 				raw[row][column] = frameBuffer[k];
-								
+
 				myImage.setPixel(column, row, color);
-				
+
 		}
 		//lets emit the signal for update
 		emit updateImage(myImage);
@@ -190,7 +192,7 @@ void LeptonThread::run()
 			//abort();
 		}*/
 	}
-	
+
 	//finally, close SPI port just bcuz
 	SpiClosePort(0);
 }
@@ -223,14 +225,14 @@ void LeptonThread::snapshot(){
 		}
 	//saving photo
 	myImage.save(QString(name), "PNG", 100);
-	
+
 	//---------------------- create raw data text file -----------------------
 	//creating file name
 	ext = ".txt";
 	strcpy(name, prefix);
 	strcat(name, number);
 	strcat(name, ext);
-	
+
 	FILE *arq = fopen(name,"wt");
 	char values[64];
 
@@ -243,6 +245,7 @@ void LeptonThread::snapshot(){
 			fputs("\n", arq);
 	}
 	fclose(arq);
+	cout << name << endl;
 }
 
 
